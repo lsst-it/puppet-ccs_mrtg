@@ -1,0 +1,271 @@
+<%- | String $mrtg_dir, String $hostname, String $snmp_community, String $iface_ip, String $iface_name, String $iface_max, Integer $mem_max, Integer $swap_max, String $sda, Array $disks, Boolean $temp_ipmi = false, String $daq_iface_ip = '', String $daq_iface_name = '', String $daq_iface_max = ''| -%>
+# -*- mode: conf -*-
+# This file is managed by Puppet; changes may be overwritten
+
+Options[_]: growright,nobanner
+EnableIPv6: no
+Htmldir:  <%= $mrtg_dir %>/html
+Imagedir: <%= $mrtg_dir %>/html/images
+Logdir:   <%= $mrtg_dir %>/html/logs
+IconDir:  <%= $mrtg_dir %>/html/icons
+
+RunAsDaemon: yes
+Interval:    5
+
+#PageTop[$]:  <p>Back to <a href="../index.html">index</a>.<p>
+
+Target[ether]: /<%= $iface_ip %>:<%= $snmp_community %>@localhost:
+SetEnv[ether]: MRTG_INT_IP="<%= $iface_ip %>" MRTG_INT_DESCR="<%= $iface_name %>"
+MaxBytes[ether]: <%= $iface_max %>
+Title[ether]: Traffic Analysis for <%= $iface_ip %> -- <%= $hostname %>
+PageTop[ether]: <h1>Traffic Analysis for <%= $iface_ip %> -- <%= $hostname %></h1>
+  <div id="sysdetails">
+  <table>
+   <tr><td>System:</td><td><%= $hostname %></td></tr>
+   <tr><td>Description:</td><td><%= $iface_name %></td></tr>
+   <tr><td>ifType:</td><td>ethernet</td></tr>
+   <tr><td>ifName:</td><td><%= $iface_name %></td></tr>
+   <tr><td>Max Speed:</td><td><%= $iface_max %> bytes/s</td></tr>
+   <tr><td>Ip:</td><td><%= $iface_ip %></td></tr>
+  </table>
+  </div>
+
+<% unless empty($daq_iface_name) { -%>
+Target[ether_daq]: /<%= $daq_iface_ip %>:<%= $snmp_community %>@localhost:
+SetEnv[ether_daq]: MRTG_INT_IP="<%= $daq_iface_ip %>" MRTG_INT_DESCR="<%= $daq_iface_name %>"
+MaxBytes[ether_daq]: <%= $daq_iface_max %>
+Title[ether_daq]: Traffic Analysis for <%= $daq_iface_ip %> -- <%= $hostname %>
+PageTop[ether_daq]: <h1>Traffic Analysis for <%= $daq_iface_ip %> -- <%= $hostname %></h1>
+  <div id="sysdetails">
+  <table>
+   <tr><td>System:</td><td><%= $hostname %></td></tr>
+   <tr><td>Description:</td><td><%= $daq_iface_name %></td></tr>
+   <tr><td>ifType:</td><td>ethernet</td></tr>
+   <tr><td>ifName:</td><td><%= $daq_iface_name %></td></tr>
+   <tr><td>Max Speed:</td><td><%= $daq_iface_max %> bytes/s</td></tr>
+   <tr><td>Ip:</td><td><%= $daq_iface_ip %></td></tr>
+  </table>
+  </div>
+
+<% } -%>
+Target[mem]: `<%= $mrtg_dir %>/mrtg_sysinfo.bash mem`
+Options[mem]: gauge,growright,nobanner,nopercent
+Title[mem]: Memory Usage
+PageTop[mem]: <h1>Memory Usage</h1>
+MaxBytes[mem]: <%= $mem_max %>
+YLegend[mem]: Memory Usage
+ShortLegend[mem]: B
+kilo[mem]: 1024
+LegendI[mem]: Used:
+LegendO[mem]: Free:
+Legend1[mem]: Used Memory
+Legend2[mem]: Free Memory
+Legend3[mem]: 
+Legend4[mem]: 
+Colours[mem]: RED#FF0000,GREEN#00FF00,DARK GREEN#006600,VIOLET#ff00ff
+
+
+Target[swap]: `<%= $mrtg_dir %>/mrtg_sysinfo.bash swap`
+Options[swap]: gauge,growright,nobanner,nopercent
+Title[swap]: Swap Usage
+PageTop[swap]: <h1>Swap Usage</h1>
+MaxBytes[swap]: <%= $swap_max %>
+YLegend[swap]: Swap
+ShortLegend[swap]: B
+kilo[swap]: 1024
+LegendI[swap]: Used:
+LegendO[swap]: Free:
+Legend1[swap]: Used Swap
+Legend2[swap]: Free Swap
+Legend3[swap]: 
+Legend4[swap]: 
+Colours[swap]: RED#FF0000,GREEN#00FF00,DARK GREEN#006600,VIOLET#ff00ff
+
+
+Target[buff]: `<%= $mrtg_dir %>/mrtg_sysinfo.bash mem-buff`
+Options[buff]: gauge,growright,nobanner,nopercent
+Title[buff]: Used/Buff+Cache Memory
+PageTop[buff]: <h1>Used/Buff+Cache Memory</h1>
+MaxBytes[buff]: <%= $mem_max %>
+YLegend[buff]: Memory Usage
+ShortLegend[buff]: B
+kilo[buff]: 1024
+LegendI[buff]: Used:
+LegendO[buff]: Buffers/cache:
+Legend1[buff]: Used Memory
+Legend2[buff]: Buffers and Cache
+Legend3[buff]: 
+Legend4[buff]: 
+Colours[buff]: DARK GREEN#006600,ORANGE#FFA500,RED#FF0000,VIOLET#ff00ff
+
+
+Target[load-ui]: `<%= $mrtg_dir %>/mrtg_sysinfo.bash load-ui`
+Options[load-ui]: gauge,growright,nobanner,nopercent
+Title[load-ui]: User/Idle CPU Load
+PageTop[load-ui]: <h1>User/Idle CPU Load</h1>
+MaxBytes[load-ui]: 5000
+YLegend[load-ui]: CPU Load
+ShortLegend[load-ui]: %
+LegendI[load-ui]: User:
+LegendO[load-ui]: Idle:
+Legend1[load-ui]: User CPU Load (%)
+Legend2[load-ui]: Idle CPU Load (%)
+Legend3[load-ui]: 
+Legend4[load-ui]: 
+Colours[load-ui]: BLUE#0000FF,GREEN#00FF00,DARK GREEN#006600,VIOLET#ff00ff
+
+
+Target[load-us]: `<%= $mrtg_dir %>/mrtg_sysinfo.bash load-us`
+Options[load-us]: gauge,growright,nobanner,nopercent
+Title[load-us]: User/System CPU Load
+PageTop[load-us]: <h1>User/System CPU Load</h1>
+MaxBytes[load-us]: 5000
+YLegend[load-us]: CPU Load
+ShortLegend[load-us]: %
+LegendI[load-us]: User:
+LegendO[load-us]: System:
+Legend1[load-us]: User CPU Load (%)
+Legend2[load-us]: System CPU Load (%)
+Legend3[load-us]: 
+Legend4[load-us]: 
+Colours[load-us]: BLUE#0000FF,RED#FF0000,DARK GREEN#006600,VIOLET#ff00ff
+
+
+Target[load-a]: `<%= $mrtg_dir %>/mrtg_sysinfo.bash load-a`
+Options[load-a]: gauge,growright,nobanner,nopercent,noo
+Title[load-a]: Active CPU Load
+PageTop[load-a]: <h1>Active CPU Load</h1>
+MaxBytes[load-a]: 5000
+YLegend[load-a]: CPU Load
+ShortLegend[load-a]: %
+LegendI[load-a]: Active:
+LegendO[load-a]:
+Legend1[load-a]: Active CPU Load (%)
+Legend2[load-a]:
+Legend3[load-a]: 
+Legend4[load-a]: 
+Colours[load-a]: BLUE#0000FF,RED#FF0000,DARK GREEN#006600,VIOLET#ff00ff
+
+
+Target[loadavg]: `<%= $mrtg_dir %>/mrtg_sysinfo.bash loadavg`
+Options[loadavg]: gauge,growright,nobanner,noi,nopercent
+Title[loadavg]: Load Average
+PageTop[loadavg]: <h1>Load Average</h1>
+MaxBytes[loadavg]: 9999
+YLegend[loadavg]: load
+ShortLegend[loadavg]: / 100
+LegendO[loadavg]: Load:
+Legend2[loadavg]: Load
+Colours[loadavg]: RED#FF0000,CYAN#00cccc,DARK GREEN#006600,VIOLET#ff00ff
+
+
+Target[users]: `<%= $mrtg_dir %>/mrtg_sysinfo.bash users`
+Options[users]: gauge,growright,nobanner,noi,nopercent
+Title[users]: Users
+PageTop[users]: <h1>Users</h1>
+MaxBytes[users]: 1000
+YLegend[users]: users
+ShortLegend[users]: users
+LegendO[users]: Users:
+Legend2[users]: Users
+Colours[users]: RED#FF0000,YELLOW#aaaa00,DARK GREEN#006600,VIOLET#ff00ff
+
+
+Target[procs]: `<%= $mrtg_dir %>/mrtg_sysinfo.bash procs`
+Options[procs]: gauge,growright,nobanner,noi,nopercent
+Title[procs]: Processes
+PageTop[procs]: <h1>Processes</h1>
+MaxBytes[procs]: 5000
+YLegend[procs]: procs
+ShortLegend[procs]: procs
+LegendO[procs]: Procs:
+Legend2[procs]: Processes
+Colours[procs]: RED#FF0000,CYAN#00cccc,DARK GREEN#006600,VIOLET#ff00ff
+
+
+Target[uptime]: `<%= $mrtg_dir %>/mrtg_sysinfo.bash uptime`
+Options[uptime]: gauge,growright,nobanner,nopercent
+Title[uptime]: Uptime
+PageTop[uptime]: <h1>Uptime</h1>
+MaxBytes[uptime]: 31536000
+YLegend[uptime]: Uptime secs
+ShortLegend[uptime]: s
+kilo[uptime]: 1000
+LegendI[uptime]: Uptime:
+LegendO[uptime]: Idle:
+Legend1[uptime]: Uptime secs
+Legend2[uptime]: Idle secs
+Legend3[uptime]: 
+Legend4[uptime]: 
+Colours[uptime]: CYAN#00cccc,VIOLET#ff00ff,RED#FF0000,GREEN#00FF00
+
+
+Target[sda]: `<%= $mrtg_dir %>/mrtg_sysinfo.bash iostat-<%= $sda %>`
+Options[sda]: growright,nobanner,nopercent
+Title[sda]: Disk Activity for <%= $sda %>
+PageTop[sda]: <h1>Disk Activity for <%= $sda %></h1>
+MaxBytes[sda]: 500000000
+YLegend[sda]: Disk Activity
+ShortLegend[sda]: B/s
+kilo[sda]: 1024
+LegendI[sda]: Read:
+LegendO[sda]: Write:
+Legend1[sda]: Read
+Legend2[sda]: Write
+Legend3[sda]: 
+Legend4[sda]: 
+Colours[sda]: CYAN#00cccc,VIOLET#ff00ff,RED#FF0000,GREEN#00FF00
+<% $disks.each | $disk | { -%>
+
+
+Target[<%= $disk[1] %>]: `<%= $mrtg_dir %>/mrtg_sysinfo.bash <%= $disk[0] %>`
+Options[<%= $disk[1] %>]: gauge,growright,nobanner
+Title[<%= $disk[1] %>]: <%= capitalize($disk[1]) %> Partition Usage
+PageTop[<%= $disk[1] %>]: <h1><%= capitalize($disk[1]) %> Partition Usage</h1>
+MaxBytes[<%= $disk[1] %>]: <%= $disk[2] %>
+YLegend[<%= $disk[1] %>]: Disk Usage
+ShortLegend[<%= $disk[1] %>]: B
+kilo[<%= $disk[1] %>]: 1024
+LegendI[<%= $disk[1] %>]: Used:
+LegendO[<%= $disk[1] %>]: Free:
+Legend1[<%= $disk[1] %>]: Used Disk
+Legend2[<%= $disk[1] %>]: Free Disk
+Legend3[<%= $disk[1] %>]: 
+Legend4[<%= $disk[1] %>]: 
+Colours[<%= $disk[1] %>]: RED#FF0000,GREEN#00FF00,DARK GREEN#006600,VIOLET#ff00ff
+
+Target[i<%= $disk[1] %>]: `<%= $mrtg_dir %>/mrtg_sysinfo.bash i<%= $disk[0] %>`
+Options[i<%= $disk[1] %>]: gauge,growright,nobanner
+Title[i<%= $disk[1] %>]: <%= capitalize($disk[1]) %> Inode Usage
+PageTop[i<%= $disk[1] %>]: <h1><%= capitalize($disk[1]) %> Inode Usage</h1>
+MaxBytes[i<%= $disk[1] %>]: <%= $disk[3] %>
+YLegend[i<%= $disk[1] %>]: Inode Usage
+ShortLegend[i<%= $disk[1] %>]: I
+kilo[i<%= $disk[1] %>]: 1000
+LegendI[i<%= $disk[1] %>]: Used:
+LegendO[i<%= $disk[1] %>]: Free:
+Legend1[i<%= $disk[1] %>]: Used Inodes
+Legend2[i<%= $disk[1] %>]: Free Inodes
+Legend3[i<%= $disk[1] %>]: 
+Legend4[i<%= $disk[1] %>]: 
+Colours[i<%= $disk[1] %>]: RED#FF0000,GREEN#00FF00,DARK GREEN#006600,VIOLET#ff00ff
+<% } -%>
+<% if $temp_ipmi { -%>
+
+
+Target[temp-ipmi]: `<%= $mrtg_dir %>/mrtg_sysinfo.bash temp-ipmi`
+Options[temp-ipmi]: gauge,growright,nobanner,nopercent
+Title[temp-ipmi]: Inlet/Exhaust Temperature
+PageTop[temp-ipmi]: <h1>Inlet/Exhaust Temperature</h1>
+MaxBytes[temp-ipmi]: 99
+YLegend[temp-ipmi]: deg C
+ShortLegend[temp-ipmi]: &deg;C
+kilo[temp-ipmi]: 1000
+LegendI[temp-ipmi]: Inlet:
+LegendO[temp-ipmi]: Exhaust:
+Legend1[temp-ipmi]: Inlet Temp
+Legend2[temp-ipmi]: Exhaust Temp
+Legend3[temp-ipmi]: 
+Legend4[temp-ipmi]: 
+Colours[temp-ipmi]: CYAN#00cccc,VIOLET#ff00ff,RED#FF0000,GREEN#00FF00
+<% } -%>
