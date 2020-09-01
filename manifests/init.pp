@@ -94,6 +94,7 @@ class ccs_mrtg {
   $service = '/etc/systemd/system/mrtg.service'
   exec { 'Create mrtg.service':
     path    => ['/usr/bin'],
+    # lint:ignore:strict_indent
     command => @("CMD"/L),
       sh -c "sed -e '/^\[Service\]/a\\
       User=${mrtg_user}\n\
@@ -104,6 +105,7 @@ class ccs_mrtg {
       --pid-file ${mrtg_pid} --logging ${mrtg_log}|' \
       /usr/lib/systemd/system/mrtg.service > ${service}"
       | CMD
+    # lint:endignore
     creates => $service,
   }
 
@@ -207,12 +209,14 @@ class ccs_mrtg {
 
 
   ## Find mounted disks.
-  $disks = ['/',
-            '/home',
-            '/var',
-            '/tmp',
-            '/scratch',
-            '/data'].filter |$disk| { $facts['mountpoints'][$disk] }
+  $disks = [
+    '/',
+    '/home',
+    '/var',
+    '/tmp',
+    '/scratch',
+    '/data',
+  ].filter |$disk| { $facts['mountpoints'][$disk] }
 
   $disks_facts = $disks.map |$disk| {
     $name = $disk == '/' ? { true => 'root', default => $disk[1,-1] }
@@ -233,7 +237,7 @@ class ccs_mrtg {
       "${title}/${basename($mrtg_cfg)}",
       {
         'mrtg_dir'       => $mrtg_dir,
-        'hostname'       => $::hostname,
+        'hostname'       => $facts['networking']['hostname'],
         'snmp_community' => $snmp_community,
         'iface_ip'       => $iface_ip,
         'iface_name'     => $iface_name,
@@ -246,7 +250,8 @@ class ccs_mrtg {
         'daq_iface_ip'   => $daq_iface_ip,
         'daq_iface_name' => $daq_iface_name,
         'daq_iface_max'  => $daq_iface_max,
-      }),
+      },
+    ),
   }
 
 
@@ -254,12 +259,14 @@ class ccs_mrtg {
 
   exec {"Create ${htmlfile}":
     path      => ['usr/sbin', '/usr/bin'],
+    # lint:ignore:strict_indent
     command   => @("CMD"/L),
       indexmaker --enumerate --compact --nolegend --prefix=html \
-      --title='MRTG Index Page for ${::hostname}' \
+      --title='MRTG Index Page for ${facts['networking']['hostname']}' \
       --pageend='<p>Back to <a href="../index.html">index</a>' \
       ${mrtg_cfg} --output ${htmlfile}
       | CMD
+    # lint:endignore
     creates   => $htmlfile,
     user      => $mrtg_user,
     subscribe => File[$mrtg_cfg],
