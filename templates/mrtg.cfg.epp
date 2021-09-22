@@ -64,6 +64,7 @@ Legend3[mem]:
 Legend4[mem]: 
 Colours[mem]: RED#FF0000,GREEN#00FF00,DARK GREEN#006600,VIOLET#ff00ff
 
+<% if $swap_max > 0 { -%>
 
 Target[swap]: `<%= $mrtg_dir %>/mrtg_sysinfo.bash swap`
 Options[swap]: gauge,growright,nobanner,nopercent
@@ -81,6 +82,7 @@ Legend3[swap]:
 Legend4[swap]: 
 Colours[swap]: RED#FF0000,GREEN#00FF00,DARK GREEN#006600,VIOLET#ff00ff
 
+<% } -%>
 
 Target[buff]: `<%= $mrtg_dir %>/mrtg_sysinfo.bash mem-buff`
 Options[buff]: gauge,growright,nobanner,nopercent

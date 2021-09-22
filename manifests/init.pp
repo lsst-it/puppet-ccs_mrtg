@@ -196,7 +196,13 @@ class ccs_mrtg {
 
 
   $mem_max = $facts['memory']['system']['total_bytes']
-  $swap_max = $facts['memory']['swap']['total_bytes']
+  $swap_info = $facts['memory']['swap']
+
+  if $swap_info {
+    $swap_max = pick($swap_info['total_bytes'], 0)
+  } else {
+    $swap_max = 0
+  }
 
   ## Eg replace sda with vda for virtual machines.
   if $facts['disks']['sda'] {
