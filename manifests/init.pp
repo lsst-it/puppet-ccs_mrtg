@@ -1,7 +1,6 @@
 ## The handling of snmp_community is horrible. :(
 
 class ccs_mrtg {
-
   ensure_packages(['net-snmp', 'mrtg', 'pwgen', 'patch', 'freeipmi'])
 
   ## Get the community from snmpd.conf, or generate a new random one.
@@ -9,11 +8,10 @@ class ccs_mrtg {
 
   $snmp_conf = '/etc/snmp/snmpd.conf'
 
-
   ## Yuck. TODO just install the whole file in the normal puppet way.
   $snmp_patch = '/tmp/.snmpd.conf.diff'
   file { $snmp_patch:
-    ensure => present,
+    ensure => file,
     mode   => '0600',
     source => "puppet:///modules/${title}/snmpd.conf.diff",
   }
@@ -32,12 +30,10 @@ class ccs_mrtg {
     notify => Service['snmpd'],
   }
 
-
   service { 'snmpd':
     ensure => running,
     enable => true,
   }
-
 
   $mrtg_user = 'mrtg'
   $mrtg_group = $mrtg_user
@@ -47,7 +43,6 @@ class ccs_mrtg {
     comment    => 'MRTG logging account',
     managehome => true,
   }
-
 
   ## TODO do not assume this
   $mrtg_home = '/home/mrtg'
@@ -60,11 +55,9 @@ class ccs_mrtg {
   $mrtg_ok = "${mrtg_dir}/mrtg.ok"
   $mrtg_sysinfo = "${mrtg_dir}/mrtg_sysinfo.bash"
 
-
   ## SELinux
   ## This assumes the selinux class has been loaded.
   if $facts['os']['selinux']['enabled'] {
-
     ## Not perfect, but to quieten AVCs.
     $contexts = {
       "${mrtg_dir}(/.*)?" => 'mrtg_var_lib_t',
@@ -85,10 +78,9 @@ class ccs_mrtg {
     selinux::module { $mrtg_module:
       ensure    => 'present',
       source_te => "puppet:///modules/${title}/${mrtg_module}.te",
-      builder   => 'simple'
+      builder   => 'simple',
     }
   }                             # SELinux
-
 
   ## TODO better to just install the whole thing.
   $service = '/etc/systemd/system/mrtg.service'
@@ -109,7 +101,6 @@ class ccs_mrtg {
     creates => $service,
   }
 
-
   file { [$mrtg_dir, "${mrtg_dir}/html"]:
     ensure => directory,
     mode   => '0755',
@@ -126,27 +117,24 @@ class ccs_mrtg {
     }
   }
 
-
   file { $mrtg_sysinfo:
-    ensure => present,
+    ensure => file,
     source => "puppet:///modules/${title}/${basename($mrtg_sysinfo)}",
     mode   => '0755',
     owner  => $mrtg_user,
     group  => $mrtg_group,
   }
 
-
   $cfgfile = "${mrtg_dir}/eth.cfg"
   ## To restrict to "main" interface, eg: -if-filter='($if_ip =~ /^134/)'
   ## This is chatty on stderr.
-  exec {"Create ${cfgfile}":
+  exec { "Create ${cfgfile}":
     path    => ['usr/sbin', '/usr/bin'],
     command => "cfgmaker --output=${cfgfile} -ifref=ip ${snmp_community}@localhost",
     creates => $cfgfile,
     umask   => '0066',
     user    => 'root',
   }
-
 
   $iface_name = $profile::ccs::facts::main_interface
 
@@ -167,7 +155,6 @@ class ccs_mrtg {
   } else {
     $iface_max = $iface_max1
   }
-
 
   if $profile::ccs::facts::daq {
     $daq_iface_name = $profile::ccs::facts::daq_interface
@@ -194,7 +181,6 @@ class ccs_mrtg {
     $daq_iface_max = ''
   }
 
-
   $mem_max = $facts['memory']['system']['total_bytes']
   $swap_info = $facts['memory']['swap']
 
@@ -213,7 +199,6 @@ class ccs_mrtg {
     $sda = regsubst($sda1, '\d+$', '')
   }
 
-
   ## Find mounted disks.
   $disks = [
     '/',
@@ -226,7 +211,7 @@ class ccs_mrtg {
 
   $disks_facts = $disks.map |$disk| {
     $name = $disk == '/' ? { true => 'root', default => $disk[1,-1] }
-    [ $disk,
+    [$disk,
       $name,
       $facts['mountpoints'][$disk]['size_bytes'],
       $facts["inodes_${name}"],
@@ -260,11 +245,11 @@ class ccs_mrtg {
     ),
   }
 
-
   $htmlfile = "${mrtg_dir}/index.html"
 
-  exec {"Create ${htmlfile}":
+  exec { "Create ${htmlfile}":
     path      => ['usr/sbin', '/usr/bin'],
+    # lint:ignore:manifest_whitespace_closing_bracket_after
     # lint:ignore:strict_indent
     command   => @("CMD"/L),
       indexmaker --enumerate --compact --nolegend --prefix=html \
@@ -273,11 +258,11 @@ class ccs_mrtg {
       ${mrtg_cfg} --output ${htmlfile}
       | CMD
     # lint:endignore
+    # lint:endignore
     creates   => $htmlfile,
     user      => $mrtg_user,
     subscribe => File[$mrtg_cfg],
   }
-
 
   if $facts['os']['selinux']['enabled'] {
     selinux::exec_restorecon { $mrtg_dir:
@@ -285,11 +270,8 @@ class ccs_mrtg {
     }
   }
 
-
   service { 'mrtg':
     ensure => running,
     enable => true,
   }
-
-
 }

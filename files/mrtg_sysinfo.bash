@@ -12,6 +12,7 @@
 ### 1. Make du return the correct result for unmounted filesystems,
 ### without having to mount them every 5 minutes.
 
+# shellcheck disable=SC1000-SC9999
 
 PN=${0##*/}
 
