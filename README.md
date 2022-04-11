@@ -84,7 +84,7 @@ For each element (class, defined type, function, and so on), list:
 
 For example:
 
-```
+```markdown
 ### `pet::cat`
 
 #### Parameters
