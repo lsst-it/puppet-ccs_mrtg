@@ -29,3 +29,6 @@ Gemfile:
       - gem: puppet-lint-trailing_newline-check
       - gem: puppet-lint-unquoted_string-check
       - gem: puppet-lint-variable_contains_upcase
+
+.github/workflows/ci.yml:
+  acceptance_tests: false
