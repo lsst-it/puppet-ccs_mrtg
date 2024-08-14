@@ -4,12 +4,21 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v1.4.0](https://github.com/lsst-it/puppet-ccs_mrtg/tree/v1.4.0) (2024-08-14)
+
+[Full Changelog](https://github.com/lsst-it/puppet-ccs_mrtg/compare/v1.3.0...v1.4.0)
+
+**Fixed bugs:**
+
+- Fix handling of network interface name [\#9](https://github.com/lsst-it/puppet-ccs_mrtg/pull/9) ([glennmorris](https://github.com/glennmorris))
+
 ## [v1.3.0](https://github.com/lsst-it/puppet-ccs_mrtg/tree/v1.3.0) (2024-08-14)
 
 [Full Changelog](https://github.com/lsst-it/puppet-ccs_mrtg/compare/v1.2.0...v1.3.0)
 
 **Implemented enhancements:**
 
+- Version 1.3.0 [\#8](https://github.com/lsst-it/puppet-ccs_mrtg/pull/8) ([glennmorris](https://github.com/glennmorris))
 - \(puppet-ccs-mrtg\) add license file [\#7](https://github.com/lsst-it/puppet-ccs_mrtg/pull/7) ([dtapiacl](https://github.com/dtapiacl))
 
 ## [v1.2.0](https://github.com/lsst-it/puppet-ccs_mrtg/tree/v1.2.0) (2023-01-31)
