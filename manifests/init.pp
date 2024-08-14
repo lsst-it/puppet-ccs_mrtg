@@ -1,6 +1,17 @@
-## The handling of snmp_community is horrible. :(
+# @summary
+#   Install and configure monit.
+#
+# @param interface
+#   String naming network interface to monitor.
+#   Default is "auto", meaning try to figure it out based on IP addresses.
+# @param daq_interface
+#   Optional string naming DAQ network interface to monitor. Typically
+#   this would be "lsst-daq".
 
-class ccs_mrtg {
+class ccs_mrtg (
+  String[1] $interface = 'auto',
+  Optional[String[1]] $daq_interface = undef,
+) {
   ensure_packages(['net-snmp', 'mrtg', 'pwgen', 'patch', 'freeipmi'])
 
   ## Get the community from snmpd.conf, or generate a new random one.
@@ -136,7 +147,17 @@ class ccs_mrtg {
     user    => 'root',
   }
 
-  $iface_name = $profile::ccs::facts::main_interface
+  if $interface == 'auto' {
+    ## Taken from the old profile::ccs::facts:
+    $ifaces = $facts['networking']['interfaces'].filter |$eth, $hash| {
+      $hash['ip'] and ($hash['ip'] =~ /^(134|140|139)/)
+    }
+    ## First match.
+    $iface = $ifaces.keys()[0]
+    $iface_name = pick($iface, 'eno1')
+  } else {
+    $iface_name = $interface    # eg eno1
+  }
 
   $iface_info = $facts['networking']['interfaces'][$iface_name]
 
@@ -156,8 +177,8 @@ class ccs_mrtg {
     $iface_max = $iface_max1
   }
 
-  if $profile::ccs::facts::daq {
-    $daq_iface_name = $profile::ccs::facts::daq_interface
+  if $daq_interface !~ Undef {
+    $daq_iface_name = $daq_interface
 
     ## TODO this duplicates the previous section; abstract it.
     $daq_iface_info = $facts['networking']['interfaces'][$daq_iface_name]

@@ -14,3 +14,26 @@
 
 The ccs_mrtg class.
 
+#### Parameters
+
+The following parameters are available in the `ccs_mrtg` class:
+
+* [`interface`](#-ccs_mrtg--interface)
+* [`daq_interface`](#-ccs_mrtg--daq_interface)
+
+##### <a name="-ccs_mrtg--interface"></a>`interface`
+
+Data type: `String[1]`
+
+
+
+Default value: `'auto'`
+
+##### <a name="-ccs_mrtg--daq_interface"></a>`daq_interface`
+
+Data type: `Optional[String[1]]`
+
+
+
+Default value: `undef`
+
