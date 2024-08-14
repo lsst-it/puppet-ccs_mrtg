@@ -4,7 +4,15 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
-## [v1.2.0](https://github.com/lsst-it/puppet-ccs_mrtg/tree/v1.2.0) (2023-01-30)
+## [v1.3.0](https://github.com/lsst-it/puppet-ccs_mrtg/tree/v1.3.0) (2024-08-14)
+
+[Full Changelog](https://github.com/lsst-it/puppet-ccs_mrtg/compare/v1.2.0...v1.3.0)
+
+**Implemented enhancements:**
+
+- \(puppet-ccs-mrtg\) add license file [\#7](https://github.com/lsst-it/puppet-ccs_mrtg/pull/7) ([dtapiacl](https://github.com/dtapiacl))
+
+## [v1.2.0](https://github.com/lsst-it/puppet-ccs_mrtg/tree/v1.2.0) (2023-01-31)
 
 [Full Changelog](https://github.com/lsst-it/puppet-ccs_mrtg/compare/v1.1.0...v1.2.0)
 
