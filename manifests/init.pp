@@ -12,7 +12,7 @@ class ccs_mrtg (
   String[1] $interface = 'auto',
   Optional[String[1]] $daq_interface = undef,
 ) {
-  ensure_packages(['net-snmp', 'mrtg', 'pwgen', 'patch', 'freeipmi'])
+  ensure_packages(['net-snmp', 'mrtg', 'pwgen', 'patch', 'freeipmi', 'perl-Time-HiRes'])
 
   ## Get the community from snmpd.conf, or generate a new random one.
   $snmp_community = $facts['snmp_community']
