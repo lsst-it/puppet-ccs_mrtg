@@ -1,4 +1,4 @@
-<%- | String $mrtg_dir, String $hostname, String $snmp_community, String $iface_ip, String $iface_name, String $iface_max, Integer $mem_max, Integer $swap_max, String $sda, Array $disks, Boolean $temp_ipmi = false, String $daq_iface_ip = '', String $daq_iface_name = '', String $daq_iface_max = ''| -%>
+<%- | String $mrtg_dir, String $hostname, String $snmp_community, String $iface_ip, String $iface_name, String $iface_max, Integer $mem_max, Integer $swap_max, String $sda, Array $disks, Boolean $temp_ipmi = false, String $daq_iface_ip = '', String $daq_iface_name = '', String $daq_iface_max = '', Boolean $iostat = false | -%>
 # -*- mode: conf -*-
 # This file is managed by Puppet; changes may be overwritten
 
@@ -200,6 +200,7 @@ Legend2[uptime]: Idle secs
 Legend3[uptime]: 
 Legend4[uptime]: 
 Colours[uptime]: CYAN#00cccc,VIOLET#ff00ff,RED#FF0000,GREEN#00FF00
+<% if $iostat { -%>
 
 
 Target[sda]: `<%= $mrtg_dir %>/mrtg_sysinfo.bash iostat-<%= $sda %>`
@@ -217,6 +218,7 @@ Legend2[sda]: Write
 Legend3[sda]: 
 Legend4[sda]: 
 Colours[sda]: CYAN#00cccc,VIOLET#ff00ff,RED#FF0000,GREEN#00FF00
+<% } -%>
 <% $disks.each | $disk | { -%>
 
 

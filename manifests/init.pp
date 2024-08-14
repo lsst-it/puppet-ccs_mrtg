@@ -262,6 +262,9 @@ class ccs_mrtg (
         'daq_iface_ip'   => $daq_iface_ip,
         'daq_iface_name' => $daq_iface_name,
         'daq_iface_max'  => $daq_iface_max,
+        ## TODO this should be true if the sysstat rpm (which provides
+        ## /usr/bin/iostat) is installed.
+        'iostat'         => false,
       },
     ),
   }
