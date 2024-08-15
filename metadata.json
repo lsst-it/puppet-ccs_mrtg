@@ -1,6 +1,6 @@
 {
   "name": "lsst-ccs_mrtg",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "author": "AURA/LSST/SLAC",
   "summary": "Manage mrtg.",
   "license": "Apache-2.0",
