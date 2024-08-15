@@ -48,15 +48,13 @@ class ccs_mrtg (
 
   $mrtg_user = 'mrtg'
   $mrtg_group = $mrtg_user
+  $mrtg_home = "/home/${mrtg_user}"
 
   user { $mrtg_user:
-    ensure     => present,
-    comment    => 'MRTG logging account',
-    managehome => true,
+    ensure  => present,
+    comment => 'MRTG logging account',
+    home    => $mrtg_home,
   }
-
-  ## TODO do not assume this
-  $mrtg_home = '/home/mrtg'
 
   $mrtg_dir = "${mrtg_home}/mrtg"
   $mrtg_cfg = "${mrtg_dir}/mrtg.cfg"
@@ -112,7 +110,7 @@ class ccs_mrtg (
     creates => $service,
   }
 
-  file { [$mrtg_dir, "${mrtg_dir}/html"]:
+  file { [$mrtg_home, $mrtg_dir, "${mrtg_dir}/html"]:
     ensure => directory,
     mode   => '0755',
     owner  => $mrtg_user,
