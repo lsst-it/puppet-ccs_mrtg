@@ -4,12 +4,21 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v1.5.1](https://github.com/lsst-it/puppet-ccs_mrtg/tree/v1.5.1) (2024-08-15)
+
+[Full Changelog](https://github.com/lsst-it/puppet-ccs_mrtg/compare/v1.5.0...v1.5.1)
+
+**Implemented enhancements:**
+
+- Ensure mrtg home is world-readable [\#14](https://github.com/lsst-it/puppet-ccs_mrtg/pull/14) ([glennmorris](https://github.com/glennmorris))
+
 ## [v1.5.0](https://github.com/lsst-it/puppet-ccs_mrtg/tree/v1.5.0) (2024-08-14)
 
 [Full Changelog](https://github.com/lsst-it/puppet-ccs_mrtg/compare/v1.4.0...v1.5.0)
 
 **Implemented enhancements:**
 
+- Version 1.5.0 [\#13](https://github.com/lsst-it/puppet-ccs_mrtg/pull/13) ([glennmorris](https://github.com/glennmorris))
 - Disable use of iostat in mrtg config [\#12](https://github.com/lsst-it/puppet-ccs_mrtg/pull/12) ([glennmorris](https://github.com/glennmorris))
 
 **Fixed bugs:**
