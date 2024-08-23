@@ -7,10 +7,13 @@
 # @param daq_interface
 #   Optional string naming DAQ network interface to monitor. Typically
 #   this would be "lsst-daq".
+# @param loss_host
+#   Optional string naming a host to check for packet loss.
 
 class ccs_mrtg (
   String[1] $interface = 'auto',
   Optional[String[1]] $daq_interface = undef,
+  Optional[String[1]] $loss_host = undef,
 ) {
   ensure_packages(['net-snmp', 'mrtg', 'pwgen', 'patch', 'freeipmi', 'perl-Time-HiRes'])
 
@@ -63,6 +66,7 @@ class ccs_mrtg (
   $mrtg_log = "${mrtg_dir}/mrtg.log"
   $mrtg_ok = "${mrtg_dir}/mrtg.ok"
   $mrtg_sysinfo = "${mrtg_dir}/mrtg_sysinfo.bash"
+  $mrtg_ping = "${mrtg_dir}/mrtg-ping-probe"
 
   ## SELinux
   ## This assumes the selinux class has been loaded.
@@ -126,12 +130,14 @@ class ccs_mrtg (
     }
   }
 
-  file { $mrtg_sysinfo:
-    ensure => file,
-    source => "puppet:///modules/${title}/${basename($mrtg_sysinfo)}",
-    mode   => '0755',
-    owner  => $mrtg_user,
-    group  => $mrtg_group,
+  [$mrtg_sysinfo, $mrtg_ping].each |$file| {
+    file { $file:
+      ensure => file,
+      source => "puppet:///modules/${title}/${basename($file)}",
+      mode   => '0755',
+      owner  => $mrtg_user,
+      group  => $mrtg_group,
+    }
   }
 
   $cfgfile = "${mrtg_dir}/eth.cfg"
@@ -260,6 +266,7 @@ class ccs_mrtg (
         'daq_iface_ip'   => $daq_iface_ip,
         'daq_iface_name' => $daq_iface_name,
         'daq_iface_max'  => $daq_iface_max,
+        'loss_host'      => $loss_host,
         ## TODO this should be true if the sysstat rpm (which provides
         ## /usr/bin/iostat) is installed.
         'iostat'         => false,
@@ -269,11 +276,11 @@ class ccs_mrtg (
 
   $htmlfile = "${mrtg_dir}/index.html"
 
-  exec { "Create ${htmlfile}":
-    path      => ['usr/sbin', '/usr/bin'],
+  exec { $htmlfile:
+    path        => ['usr/sbin', '/usr/bin'],
     # lint:ignore:manifest_whitespace_closing_bracket_after
     # lint:ignore:strict_indent
-    command   => @("CMD"/L),
+    command     => @("CMD"/L),
       indexmaker --enumerate --compact --nolegend --prefix=html \
       --title='MRTG Index Page for ${facts['networking']['hostname']}' \
       --pageend='<p>Back to <a href="../index.html">index</a>' \
@@ -281,9 +288,9 @@ class ccs_mrtg (
       | CMD
     # lint:endignore
     # lint:endignore
-    creates   => $htmlfile,
-    user      => $mrtg_user,
-    subscribe => File[$mrtg_cfg],
+    user        => $mrtg_user,
+    refreshonly => true,
+    subscribe   => File[$mrtg_cfg],
   }
 
   if $facts['os']['selinux']['enabled'] {

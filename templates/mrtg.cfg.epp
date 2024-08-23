@@ -1,4 +1,4 @@
-<%- | String $mrtg_dir, String $hostname, String $snmp_community, String $iface_ip, String $iface_name, String $iface_max, Integer $mem_max, Integer $swap_max, String $sda, Array $disks, Boolean $temp_ipmi = false, String $daq_iface_ip = '', String $daq_iface_name = '', String $daq_iface_max = '', Boolean $iostat = false | -%>
+<%- | String $mrtg_dir, String $hostname, String $snmp_community, String $iface_ip, String $iface_name, String $iface_max, Integer $mem_max, Integer $swap_max, String $sda, Array $disks, Boolean $temp_ipmi = false, String $daq_iface_ip = '', String $daq_iface_name = '', String $daq_iface_max = '', String $loss_host = '', Boolean $iostat = false | -%>
 # -*- mode: conf -*-
 # This file is managed by Puppet; changes may be overwritten
 
@@ -46,6 +46,21 @@ PageTop[ether_daq]: <h1>Traffic Analysis for <%= $daq_iface_ip %> -- <%= $hostna
    <tr><td>Ip:</td><td><%= $daq_iface_ip %></td></tr>
   </table>
   </div>
+
+<% } -%>
+<% unless empty($loss_host) { -%>
+Target[loss]: `<%= $mrtg_dir %>/mrtg-ping-probe -t 42 -p 0/loss <%= $loss_host %>`
+Options[loss]: gauge,growright,nobanner,noi,nopercent
+Title[loss]: Packet Loss
+PageTop[loss]: <h1>Packet Loss to <%= $loss_host %></h1>
+MaxBytes[loss]: 100
+AbsMax[loss]: 101
+Unscaled[loss]: dwmy
+YLegend[loss]: % Packet Loss
+ShortLegend[loss]: %
+LegendO[loss]: Packet Loss
+Legend2[loss]: % Packet Loss
+Colours[loss]: GREEN#00FF00,RED#FF0000,DARK GREEN#006600,VIOLET#ff00ff
 
 <% } -%>
 Target[mem]: `<%= $mrtg_dir %>/mrtg_sysinfo.bash mem`
