@@ -4,12 +4,21 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v1.6.0](https://github.com/lsst-it/puppet-ccs_mrtg/tree/v1.6.0) (2024-08-23)
+
+[Full Changelog](https://github.com/lsst-it/puppet-ccs_mrtg/compare/v1.5.1...v1.6.0)
+
+**Implemented enhancements:**
+
+- Add option to monitor packet loss to some host [\#16](https://github.com/lsst-it/puppet-ccs_mrtg/pull/16) ([glennmorris](https://github.com/glennmorris))
+
 ## [v1.5.1](https://github.com/lsst-it/puppet-ccs_mrtg/tree/v1.5.1) (2024-08-15)
 
 [Full Changelog](https://github.com/lsst-it/puppet-ccs_mrtg/compare/v1.5.0...v1.5.1)
 
 **Implemented enhancements:**
 
+- Version 1.5.1 [\#15](https://github.com/lsst-it/puppet-ccs_mrtg/pull/15) ([glennmorris](https://github.com/glennmorris))
 - Ensure mrtg home is world-readable [\#14](https://github.com/lsst-it/puppet-ccs_mrtg/pull/14) ([glennmorris](https://github.com/glennmorris))
 
 ## [v1.5.0](https://github.com/lsst-it/puppet-ccs_mrtg/tree/v1.5.0) (2024-08-14)
