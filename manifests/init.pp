@@ -276,11 +276,11 @@ class ccs_mrtg (
 
   $htmlfile = "${mrtg_dir}/index.html"
 
-  exec { "Create ${htmlfile}":
-    path      => ['usr/sbin', '/usr/bin'],
+  exec { $htmlfile:
+    path        => ['usr/sbin', '/usr/bin'],
     # lint:ignore:manifest_whitespace_closing_bracket_after
     # lint:ignore:strict_indent
-    command   => @("CMD"/L),
+    command     => @("CMD"/L),
       indexmaker --enumerate --compact --nolegend --prefix=html \
       --title='MRTG Index Page for ${facts['networking']['hostname']}' \
       --pageend='<p>Back to <a href="../index.html">index</a>' \
@@ -288,9 +288,9 @@ class ccs_mrtg (
       | CMD
     # lint:endignore
     # lint:endignore
-    creates   => $htmlfile,
-    user      => $mrtg_user,
-    subscribe => File[$mrtg_cfg],
+    user        => $mrtg_user,
+    refreshonly => true,
+    subscribe   => File[$mrtg_cfg],
   }
 
   if $facts['os']['selinux']['enabled'] {
