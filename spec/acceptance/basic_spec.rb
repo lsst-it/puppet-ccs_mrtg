@@ -3,5 +3,5 @@
 require 'spec_helper_acceptance'
 
 describe 'ccs_mrtg class' do
-  include_examples 'the example', 'basic.pp'
+  it_behaves_like 'the example', 'basic.pp'
 end
